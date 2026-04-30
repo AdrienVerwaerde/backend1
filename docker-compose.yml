@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydb
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    restart: always
+    ports:
+      - '3001:3000'
+    environment:
+      DATABASE_URL: 'postgres://c144e9452e58eed486d9e6adceee98bff90aa9b0396fe209d10f1484ffeba4ff:sk_g4L97dq4DmDLq-7QjW-Cf@db.prisma.io:5432/postgres?sslmode=require'
+    depends_on:
+      - db
+    command: >
+      sh -c "npx wait-on tcp:db:5432 && npx prisma migrate deploy && node dist/src/main.js"
+
+volumes:
+  postgres_data:
