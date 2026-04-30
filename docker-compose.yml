@@ -17,7 +17,7 @@ services:
     ports:
       - '3001:3000'
     environment:
-      DATABASE_URL: 'postgres://c144e9452e58eed486d9e6adceee98bff90aa9b0396fe209d10f1484ffeba4ff:sk_g4L97dq4DmDLq-7QjW-Cf@db.prisma.io:5432/postgres?sslmode=require'
+      DATABASE_URL: ${DATABASE_URL}
     depends_on:
       - db
     volumes:
