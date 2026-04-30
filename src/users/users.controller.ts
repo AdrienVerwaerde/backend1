@@ -13,6 +13,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from './dto/pagination.dto';
+import { DeleteRoute } from '../../src/common/decorators/delete-route';
 
 @Controller('users')
 export class UsersController {
@@ -28,26 +29,23 @@ export class UsersController {
     return this.usersService.findAll(pagination);
   }
 
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(id);
   }
 
-  // 🆕 GET /users/:id/orders-detail
   @Get(':id/orders')
   findOneWithOrders(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOneWithOrders(id);
   }
 
   @Patch(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdateUserDto,
-  ) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUserDto) {
     return this.usersService.update(id, dto);
   }
 
-  @Delete(':id')
+  @DeleteRoute()
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
   }

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:15
@@ -22,8 +20,11 @@ services:
       DATABASE_URL: 'postgres://c144e9452e58eed486d9e6adceee98bff90aa9b0396fe209d10f1484ffeba4ff:sk_g4L97dq4DmDLq-7QjW-Cf@db.prisma.io:5432/postgres?sslmode=require'
     depends_on:
       - db
+    volumes:
+      - .:/app
+      - /app/node_modules
     command: >
-      sh -c "npx wait-on tcp:db:5432 && npx prisma migrate deploy && node dist/src/main.js"
+      sh -c "npx wait-on tcp:db:5432 && npx prisma migrate deploy && npm run start:dev"
 
 volumes:
   postgres_data:

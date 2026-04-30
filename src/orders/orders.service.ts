@@ -8,7 +8,7 @@ import { Prisma, OrderStatus } from '@prisma/client';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { OrderPaginationDto } from './dto/order-pagination.dto';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class OrdersService {
