@@ -32,12 +32,12 @@ export class UsersController {
 
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: string) {
     return this.usersService.findOne(id);
   }
 
   @Get(':id/orders')
-  findOneWithOrders(@Param('id', ParseIntPipe) id: number) {
+  findOneWithOrders(@Param('id', ParseIntPipe) id: string) {
     return this.usersService.findOneWithOrders(id);
   }
 
@@ -59,12 +59,12 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUserDto) {
+  update(@Param('id', ParseIntPipe) id: string, @Body() dto: UpdateUserDto) {
     return this.usersService.update(id, dto);
   }
 
   @DeleteRoute()
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id', ParseIntPipe) id: string) {
     return this.usersService.remove(id);
   }
 }

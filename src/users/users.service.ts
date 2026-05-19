@@ -7,19 +7,18 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from './dto/pagination.dto';
-import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
-
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) { }
 
-  // Common select to avoid leaking password
+  // Common select to avoid leaking sensitive fields
   private readonly safeUserSelect = {
     id: true,
     email: true,
     name: true,
+    emailVerified: true,
     createdAt: true,
     updatedAt: true,
   };
@@ -32,13 +31,10 @@ export class UsersService {
       throw new ConflictException('Email already in use');
     }
 
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
-
     return this.prisma.user.create({
       data: {
         email: dto.email,
         name: dto.name,
-        password: hashedPassword,
       },
       select: this.safeUserSelect,
     });
@@ -51,7 +47,7 @@ export class UsersService {
     if (cursor !== undefined) {
       const items = await this.prisma.user.findMany({
         take: limit + 1,
-        ...(cursor > 0 && {
+        ...(cursor && {
           skip: 1,
           cursor: { id: cursor },
         }),
@@ -97,7 +93,7 @@ export class UsersService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
       select: this.safeUserSelect,
@@ -109,8 +105,7 @@ export class UsersService {
     return user;
   }
 
-  // 🆕 Fetch a user WITH their orders
-  async findOneWithOrders(id: number) {
+  async findOneWithOrders(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
@@ -142,22 +137,20 @@ export class UsersService {
     return user;
   }
 
-  async update(id: number, dto: UpdateUserDto) {
+  async update(id: string, dto: UpdateUserDto) {
     await this.findOne(id); // ensures it exists
-
-    const data: any = { ...dto };
-    if (dto.password) {
-      data.password = await bcrypt.hash(dto.password, 10);
-    }
 
     return this.prisma.user.update({
       where: { id },
-      data,
+      data: {
+        email: dto.email,
+        name: dto.name,
+      },
       select: this.safeUserSelect,
     });
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     await this.findOne(id);
     // Thanks to onDelete: Cascade in schema, orders will be deleted too 🧹
     return this.prisma.user.delete({
