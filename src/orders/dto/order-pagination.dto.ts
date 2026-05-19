@@ -1,6 +1,6 @@
 import { OrderStatus } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class OrderPaginationDto {
     @IsOptional()
@@ -17,10 +17,8 @@ export class OrderPaginationDto {
     limit?: number = 10;
 
     @IsOptional()
-    @Type(() => Number)
-    @IsInt()
-    @Min(1)
-    userId?: number;
+    @IsString()
+    userId?: string;
 
     @IsOptional()
     @IsEnum(OrderStatus)

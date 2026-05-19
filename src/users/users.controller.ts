@@ -14,6 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from './dto/pagination.dto';
 import { DeleteRoute } from '../../src/common/decorators/delete-route';
+import { Session, UserSession, AllowAnonymous, OptionalAuth } from '@thallesp/nestjs-better-auth';
 
 @Controller('users')
 export class UsersController {
@@ -31,22 +32,39 @@ export class UsersController {
 
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: string) {
     return this.usersService.findOne(id);
   }
 
   @Get(':id/orders')
-  findOneWithOrders(@Param('id', ParseIntPipe) id: number) {
+  findOneWithOrders(@Param('id', ParseIntPipe) id: string) {
     return this.usersService.findOneWithOrders(id);
   }
 
+  @Get('me')
+  async getProfile(@Session() session: UserSession) {
+    return { user: session.user };
+  }
+
+  @Get('public')
+  @AllowAnonymous() // Allow anonymous access
+  async getPublic() {
+    return { message: 'Public route' };
+  }
+
+  @Get('optional')
+  @OptionalAuth() // Authentication is optional
+  async getOptional(@Session() session: UserSession) {
+    return { authenticated: !!session };
+  }
+
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUserDto) {
+  update(@Param('id', ParseIntPipe) id: string, @Body() dto: UpdateUserDto) {
     return this.usersService.update(id, dto);
   }
 
   @DeleteRoute()
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id', ParseIntPipe) id: string) {
     return this.usersService.remove(id);
   }
 }

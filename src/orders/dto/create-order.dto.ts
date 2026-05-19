@@ -3,6 +3,7 @@ import {
     ArrayMinSize,
     IsArray,
     IsInt,
+    IsString,
     Min,
     ValidateNested,
 } from 'class-validator';
@@ -20,10 +21,8 @@ export class OrderItemDto {
 }
 
 export class CreateOrderDto {
-    @Type(() => Number)
-    @IsInt()
-    @Min(1)
-    userId: number;
+    @IsString()
+    userId: string;
 
     @IsArray()
     @ArrayMinSize(1)
