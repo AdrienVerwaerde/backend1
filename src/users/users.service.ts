@@ -18,6 +18,7 @@ export class UsersService {
     id: true,
     email: true,
     name: true,
+    role: true,
     emailVerified: true,
     createdAt: true,
     updatedAt: true,
@@ -41,9 +42,10 @@ export class UsersService {
   }
 
   async findAll(pagination: PaginationDto) {
-    const { page, limit = 10, cursor } = pagination;
+    const { page, limit = 10, cursor, role } = pagination;
 
-    // --- CURSOR PAGINATION ---
+    const where = role ? { role } : {};
+
     if (cursor !== undefined) {
       const items = await this.prisma.user.findMany({
         take: limit + 1,
@@ -51,6 +53,7 @@ export class UsersService {
           skip: 1,
           cursor: { id: cursor },
         }),
+        where,
         orderBy: { id: 'asc' },
         select: this.safeUserSelect,
       });
@@ -65,30 +68,27 @@ export class UsersService {
       };
     }
 
-    // --- CLASSIC PAGINATION ---
-    const currentPage = page ?? 1;
-    const skip = (currentPage - 1) * limit;
-
-    const [data, total] = await this.prisma.$transaction([
+    // Classic pagination
+    const skip = page ? (page - 1) * limit : 0;
+    const [total, data] = await Promise.all([
+      this.prisma.user.count({ where }),
       this.prisma.user.findMany({
         skip,
         take: limit,
+        where,
         orderBy: { id: 'asc' },
         select: this.safeUserSelect,
       }),
-      this.prisma.user.count(),
     ]);
 
     return {
       data,
       pagination: {
         type: 'offset',
-        page: currentPage,
-        limit,
         total,
+        page: page ?? 1,
+        limit,
         totalPages: Math.ceil(total / limit),
-        hasNextPage: currentPage * limit < total,
-        hasPrevPage: currentPage > 1,
       },
     };
   }
@@ -145,6 +145,7 @@ export class UsersService {
       data: {
         email: dto.email,
         name: dto.name,
+        role: dto.role,
       },
       select: this.safeUserSelect,
     });
