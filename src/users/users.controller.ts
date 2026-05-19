@@ -7,7 +7,6 @@ import {
   Patch,
   Delete,
   Query,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -32,12 +31,12 @@ export class UsersController {
 
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: string) {
+  findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
   @Get(':id/orders')
-  findOneWithOrders(@Param('id', ParseIntPipe) id: string) {
+  findOneWithOrders(@Param('id') id: string) {
     return this.usersService.findOneWithOrders(id);
   }
 
@@ -59,12 +58,13 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: string, @Body() dto: UpdateUserDto) {
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     return this.usersService.update(id, dto);
   }
 
   @DeleteRoute()
-  remove(@Param('id', ParseIntPipe) id: string) {
+  remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
 }

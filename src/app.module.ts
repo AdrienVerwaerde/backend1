@@ -6,7 +6,7 @@ import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { AuthModule } from '@thallesp/nestjs-better-auth';
-import { auth } from './lib/auth';
+import { auth } from './lib/auth/auth';
 
 
 
@@ -16,3 +16,4 @@ import { auth } from './lib/auth';
   providers: [AppService],
 })
 export class AppModule { }
+

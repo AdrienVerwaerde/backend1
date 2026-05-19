@@ -4,7 +4,6 @@ import {
     Delete,
     Get,
     Param,
-    ParseIntPipe,
     Patch,
     Post,
     Query,
@@ -29,20 +28,20 @@ export class OrdersController {
     }
 
     @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id: number) {
+    findOne(@Param('id') id: number) {
         return this.ordersService.findOne(id);
     }
 
     @Patch(':id/status')
     updateStatus(
-        @Param('id', ParseIntPipe) id: number,
+        @Param('id') id: number,
         @Body() dto: UpdateOrderStatusDto,
     ) {
         return this.ordersService.updateStatus(id, dto);
     }
 
     @Delete(':id')
-    cancel(@Param('id', ParseIntPipe) id: number) {
+    cancel(@Param('id') id: number) {
         return this.ordersService.cancel(id);
     }
 }

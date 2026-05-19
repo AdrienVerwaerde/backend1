@@ -7,7 +7,6 @@ import {
     Patch,
     Delete,
     Query,
-    ParseIntPipe,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -29,13 +28,13 @@ export class ProductsController {
     }
 
     @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id: number) {
+    findOne(@Param('id') id: number) {
         return this.productsService.findOne(id);
     }
 
     @Patch(':id')
     update(
-        @Param('id', ParseIntPipe) id: number,
+        @Param('id') id: number,
         @Body() dto: UpdateProductDto,
     ) {
         return this.productsService.update(id, dto);
@@ -43,13 +42,13 @@ export class ProductsController {
 
     // Soft delete (sets available = false)
     @Delete(':id')
-    remove(@Param('id', ParseIntPipe) id: number) {
+    remove(@Param('id') id: number) {
         return this.productsService.remove(id);
     }
 
     // Hard delete (truly removes, fails if referenced)
     @Delete(':id/hard')
-    hardRemove(@Param('id', ParseIntPipe) id: number) {
+    hardRemove(@Param('id') id: number) {
         return this.productsService.hardRemove(id);
     }
 }
